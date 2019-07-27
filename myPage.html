@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Testing node.js</title>
+
+    <style>
+      body , html{
+        margin: 0;
+        padding: 0;
+        font-family:  'Courier New', Courier, monospace;
+      }
+
+    .container{
+      width: 100%;
+      height: 100vh;
+      background-attachment: fixed;
+      background-image: linear-gradient(rgba(0,0,0,0.5) , rgba(0,0,0,0.5)),url("number.jpg");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    main{
+      background-color: #fff;
+      box-shadow: 1px 1px 40px 1px rgba(0,0,0,0.5);
+      width: 80%;
+      margin: auto;
+      padding: 15px;
+      position: relative;
+      top: 200px;
+    }
+     
+     article{ padding: 10px;}
+
+    .section-container{
+      display: flex;
+      padding: 10px;
+    }
+     
+     section{
+       padding: 10px;
+       width: 100%;
+     }
+     section * {display: block;
+     margin: 10px;}
+
+     span * {display: inline;}
+
+     select , button , textarea{margin: auto;}
+
+     p{color: red; display: none;}
+
+     input{padding: 10px; font-size: 15px; text-align: center ; border-width:0; border-bottom: 1px solid #aaa }
+
+     button{background-color: transparent; color: dodgerblue; border: 1px solid dodgerblue; transition-duration: .3s;
+     cursor: pointer; padding: 5px 10px; border-radius: 10px; margin-top: 15px; font-size: 15px; font-weight: bold;}
+
+     button:hover{ background-color: dodgerblue; color: #fff;}
+
+     .left button , .left input{margin-bottom:10px; }
+     .left * {
+      margin:auto;
+     }
+
+     .left textarea{width: 250px; height: 150px; text-align: center;}
+    </style>
+  </head>
+  <body>
+    
+<div class="container">
+  <main>
+    <article>
+      <div class="section-container">
+      <section class="left">
+        <span> <span id="variable">0</span> / <span id="sum">0</span> </span>
+        <input type="number" id="index" disabled/>
+        <button onclick="snedNumber()">Send</button>
+        <textarea id="area"></textarea>
+        <p id="textP"></p>
+      </section>
+          
+      <section>
+        <select id="choose">
+            <option value="operation">Choose operation</option>
+          <option value="Nilptent">Nilptent</option>
+          <option value="Idempotant">Idempotant</option>
+          <option value="Periodic">Periodic</option>
+        </select>
+
+        <span> <label>Cols Number:</label> <input type="number" id="cols"/></span>
+        <span> <label>Rows Number:</label> <input type="number" id="rows"/></span>
+
+        <p id="p">The number of coloms and rows must be equals</p>
+
+        <button onclick="isSame()">Done</button>
+      </section>
+
+    </div>
+    </article>
+  </main>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.0.3/math.min.js"></script>
+  <script>
+   
+    var par = document.getElementById("p");
+    var spanSum = document.getElementById("sum");
+    var textP = document.getElementById("textP");
+    var textarea = document.getElementById("area");
+    var colsNumber = document.getElementById("cols");
+    var rowsNumber = document.getElementById("rows");
+    var index = document.getElementById("index");
+    var variable = document.getElementById("variable");
+    var select = document.getElementById("choose");
+    var newArr = [];
+    var array = [];
+    var indexNumber = 0;
+    // Confairm that the colums and rows number is the same 
+    var isSame = ()=>{
+      var result;
+       
+   
+      if(colsNumber.value!=rowsNumber.value){
+       par.style.display = "block";
+
+      }
+      else{
+        par.style.display = "none";
+        result = parseInt(colsNumber.value) * parseInt(rowsNumber.value);
+        spanSum.innerHTML = result.toString();
+        index.removeAttribute("disabled");
+      }
+    }
+    
+
+    // Send the numbers to the array
+    var snedNumber = ()=>{
+      array.push(parseInt(index.value));
+      indexNumber++
+      variable.innerHTML = indexNumber.toString();
+      if(indexNumber == parseInt(spanSum.innerHTML)){
+        index.setAttribute("disabled" , true)
+        if(select.options[select.selectedIndex].value == "Nilptent"){
+          while(array.length) {
+          newArr.push(array.splice(0,colsNumber.value));} 
+          console.log(newArr); 
+          Nilptent();
+        }
+
+        if(select.options[select.selectedIndex].value == "Idempotant"){
+          while(array.length) {
+          newArr.push(array.splice(0,colsNumber.value));} 
+          console.log(newArr); 
+          Idempotant();
+        }
+
+        if(select.options[select.selectedIndex].value == "Periodic"){
+          while(array.length) {
+          newArr.push(array.splice(0,colsNumber.value));} 
+          Periodic();
+        }
+      }
+      index.value = " ";
+    
+    }
+   
+    
+      
+
+
+
+    var Nilptent = ()=>{
+      var convert = [];
+      var multiArr = math.multiply(newArr, newArr);
+      for( let i = 0; i<=10; i++){
+        multiArr = math.multiply(newArr, multiArr);
+        convert = ConvertTowToOne(multiArr);
+        if(isZero(convert) == true){
+          sortArray(multiArr , colsNumber.value);
+          textP.innerHTML = "Nilptent => A<sup>m</sup> = 0, the answer is correct!!";
+          textP.style.display = "block";
+          textP.style.color = "#0f0";
+        }
+        else{
+          sortArray(multiArr , colsNumber.value);
+          textP.innerHTML = "Nilptent => A<sup>m</sup> = 0, the answer isn't correct!!";
+          textP.style.display = "block";
+        }
+      }
+    }
+
+    var Idempotant = ()=>{
+      var convert_second_arr = []
+      var conver_origin_arr = []
+       var result = math.multiply(newArr, newArr)
+       convert_second_arr = ConvertTowToOne(result)
+       conver_origin_arr = ConvertTowToOne(newArr)
+       if(isSameArrays(conver_origin_arr , convert_second_arr) == true){
+        sortArray(result , colsNumber.value);
+        textP.innerHTML = "Idempotant => A<sup style='dispaly:inline'>2</sup> = A, the answer is correct!!";
+        textP.style.display = "block";
+        textP.style.color = "#0f0";
+       }else{
+        sortArray(result , colsNumber.value);
+        textP.innerHTML = "Idempotant => A<sup style='dispaly:inline'>2</sup> = A, the answer isn't correct!!";
+        textP.style.display = "block";
+       }
+       
+    }
+
+    var Periodic = ()=>{
+      var convert_second_arr = []
+      var conver_origin_arr = []
+       var periArr = math.multiply(newArr, newArr)
+       for(let i = 0; i<=10; i++){
+         periArr = math.multiply(newArr, periArr);
+         convert_second_arr = ConvertTowToOne(periArr)
+         conver_origin_arr = ConvertTowToOne(newArr)
+         if(isSameArrays(conver_origin_arr , convert_second_arr) == true){
+           sortArray(periArr , colsNumber.value);
+          textP.innerHTML = "Periodic => A<sup>m</sup> = A, the answer is correct!!";
+          textP.style.display = "block";
+          textP.style.color = "#0f0";
+         }else{
+          sortArray(periArr , colsNumber.value);
+          textP.innerHTML = "Periodic => A<sup style='display: inline'>m</sup> = A, the answer isn't correct!!";
+          textP.style.display = "block";
+         }
+       }
+    }
+    
+    var sortArray = (arr , divideNumber)=>{
+        for(var j = 0; j<=arr.length; j+=divideNumber){
+          textarea.innerHTML = arr.splice(0,divideNumber).join("\n");
+        }
+    }
+
+    var ConvertTowToOne = (arrTow)=>{
+      var new_oneD = [];
+      for(var i = 0; i < arrTow.length; i++)
+         {
+            new_oneD = new_oneD.concat(arrTow[i]);
+         }
+         return new_oneD;
+    }
+
+    var isZero = (arrCheck)=>{
+      var zero_sum = 0;
+        for( var i = 0; i<arrCheck.length; i++){
+          if(arrCheck[i] == 0){
+            zero_sum+=1;
+          }
+        }
+        if(zero_sum == arrCheck.length){
+          return true;
+        }
+        else{
+          return false;
+        }
+    }
+
+    var isSameArrays = (arr1 , arr2)=>{
+      var sameSum = 0;
+       if(arr1.length == arr2.length){
+         for(var i = 0; i<arr1.length; i++){
+           if(arr1[i] == arr2[i]){
+             sameSum+=1
+           }
+           else{
+             break
+             return false;
+           }
+         }
+
+         if(sameSum == arr1.length){
+           return true;
+         }
+       }
+    }
+
+
+  let array1d = [1,2,3,4,5,6]
+
+  let array2d = [
+                   [1,2,3] , 
+                   [4,5,6]
+                           ]
+
+
+
+   
+  </script>  
+  </body>
+
+</html>
